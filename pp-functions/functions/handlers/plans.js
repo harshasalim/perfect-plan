@@ -53,7 +53,9 @@ exports.getPlan = (req, res) => {
             }
             planData = doc.data();
             planData.planId= doc.id;
-            return db.collection("comments").where("planId","==", req.params.planId).get();
+            return db.collection("comments")
+            .orderBy('createdAt','desc')
+            .where("planId","==", req.params.planId).get();
         })
         .then(data => {
             planData.comments = [];
@@ -67,3 +69,31 @@ exports.getPlan = (req, res) => {
             res.status(500).json({error: err.code});
         });
 };
+
+//Comment on a plan
+exports.commentOnPlan = (req, res) => {
+    if(req.body.body.trim() === '') return res.status(400).json({ comment: 'Must not be empty'});
+
+    const newComment = {
+        body: req.body.body,
+        createdAt: new Date().toISOString(),
+        planId: req.params.planId,
+        userHandle: req.user.handle,
+        userImage: req.user.imageUrl
+    };
+
+    db.doc(`/plans/${req.params.planId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({ error: 'Plan not found'});
+            }
+            return db.collection('comments').add(newComment);
+        })
+        .then(()=>{
+            res.json(newComment);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ error: 'Something went wrong'});
+        })
+}

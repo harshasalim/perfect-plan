@@ -43,3 +43,27 @@ exports.postOnePlan = (req, res) => {
             console.error(err);
         });
 }
+
+exports.getPlan = (req, res) => {
+    let planData = {};
+    db.doc(`/plans/${req.params.planId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({ error: 'Plan not found' });
+            }
+            planData = doc.data();
+            planData.planId= doc.id;
+            return db.collection("comments").where("planId","==", req.params.planId).get();
+        })
+        .then(data => {
+            planData.comments = [];
+            data.forEach(doc => {
+                planData.comments.push(doc.data());
+            });
+            return res.json(planData);
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({error: err.code});
+        });
+};

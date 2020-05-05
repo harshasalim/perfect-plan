@@ -1,4 +1,16 @@
 let db = {
+    users: [
+        {
+            userId:'gfdsdfghgfddfgfdsdf',
+            email:'',
+            handle:'',
+            createdAt:'',
+            imageUrl:'',
+            bio:'',
+            website:'',
+            location:''
+        }
+    ],
     plans: [
         {
             userHandle: 'user',

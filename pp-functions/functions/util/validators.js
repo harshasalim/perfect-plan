@@ -49,3 +49,18 @@ exports.validateLoginData = (data) =>{
     
     
 }
+
+exports.reduceUserDetails = (data) => {
+    let userDetails = {};
+
+    if(!isEmpty(data.bio.trim())) userDetails.bio = data.bio;
+    if(!isEmpty(data.website.trim())){
+        //if user's website is submitted as https://website.com, no issues, else if submitted was website.com then we have to store as http://website.com(no ssh hash)
+        //https works on http but http not on https
+        if(data.website.trim().substring(0,4) !== 'http'){
+            userDetails.website = `http://${data.website.trim()}`;
+        } else userDetails.website = data.website;
+    }
+    if(!isEmpty(data.location.trim())) userDetails.location = data.location;
+    return userDetails;
+}

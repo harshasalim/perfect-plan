@@ -30,13 +30,18 @@ exports.postOnePlan = (req, res) => {
     const newPlan= {
         body: req.body.body,
         userHandle: req.user.handle,
-        createdAt: new Date().toISOString()
+        userImage: req.user.imageUrl,
+        createdAt: new Date().toISOString(),
+        likeCount:0,
+        commentCount:0
     };
 
     db.collection('plans')
         .add(newPlan)
         .then((doc) => {
-            res.json({message: `document ${doc.id} created successfully`});
+            const resPlan = newPlan;
+            resPlan.planId = doc.id;
+            res.json(resPlan);
         })
         .catch((err) => {
             res.status(500).json({ error: 'something went wrong'});
@@ -87,13 +92,118 @@ exports.commentOnPlan = (req, res) => {
             if(!doc.exists){
                 return res.status(404).json({ error: 'Plan not found'});
             }
+            return doc.ref.update({ commentCount: doc.data().commentCount+1});
+        })
+        .then(()=>{
             return db.collection('comments').add(newComment);
         })
         .then(()=>{
             res.json(newComment);
         })
         .catch(err => {
-            console.error(err);
+            console.log(err);
             res.status(500).json({ error: 'Something went wrong'});
+        })
+}
+
+exports.likePlan = (req, res) => {
+    const likeDocument = db.collection('likes').where('userHandle','==',req.user.handle)
+        .where('planId','==',req.params.planId).limit(1);
+
+    const planDocument = db.doc(`/plans/${req.params.planId}`);
+
+    let planData;
+
+    planDocument.get()
+        .then(doc => {
+            if(doc.exists){
+                planData = doc.data();
+                planData.planId= doc.id;
+                return likeDocument.get();
+            } else{
+                return res.status(404).json({error:'Plan not found'});
+            }
+        })
+        .then(data => {
+            if(data.empty){
+                return db.collection('likes').add({
+                    planId: req.params.planId,
+                    userHandle:req.user.handle
+                })
+                .then(() => {
+                    planData.likeCount++
+                    return planDocument.update({ likeCount: planData.likeCount });
+                })
+                .then(()=>{
+                    return res.json(planData);
+                })
+            } else {
+                return res.status(400).json({ error: 'Plan already liked'});
+            }
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).json({ error: err.code });
+        });
+};
+
+exports.unlikePlan = (req, res) =>{
+    const likeDocument = db.collection('likes').where('userHandle','==',req.user.handle)
+    .where('planId','==',req.params.planId).limit(1);
+
+const planDocument = db.doc(`/plans/${req.params.planId}`);
+
+let planData;
+
+planDocument.get()
+    .then(doc => {
+        if(doc.exists){
+            planData = doc.data();
+            planData.planId= doc.id;
+            return likeDocument.get();
+        } else{
+            return res.status(404).json({error:'Plan not found'});
+        }
+    })
+    .then(data => {
+        if(data.empty){
+            return res.status(400).json({ error: 'Plan not liked'});
+        } else {
+            return db.doc(`/likes/${data.docs[0].id}`).delete()
+                .then(()=> {
+                    planData.likeCount--;
+                    return planDocument.update({ likeCount: planData.likeCount});
+                })
+                .then(()=> {
+                    res.json(planData);
+                })
+        }
+    })
+    .catch(err => {
+        console.error(err)
+        res.status(500).json({ error: err.code });
+    }); 
+};
+
+exports.deletePlan = (req, res) => {
+    const document = db.doc(`/plans/${req.params.planId}`);
+    document.get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({ error: 'Plan not found' });
+            }
+            if(doc.data().userHandle !== req.user.handle){
+                return res.status(403).json({ error: 'Unauthorized' });
+            }
+            else {
+                return document.delete();
+            }
+        })
+        .then(()=> {
+            res.json({ message: 'Plan deleted successfully' });
+        })
+        .catch(err => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
         })
 }

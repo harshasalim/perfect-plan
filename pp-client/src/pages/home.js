@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Profiler } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
 
 import Plan from '../components/Plan';
+import Profile from '../components/Profile';
 
-export class home extends Component {
+class home extends Component {
     state ={
         plans: null
     }
@@ -27,7 +28,7 @@ export class home extends Component {
                 {recentPlansMarkup}
             </Grid>
             <Grid item sm={4} xs={12}>
-                <p>prof</p>
+                <Profile />
             </Grid>
         </Grid>    
         )

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import { ThemeProvider as MuiThemeProvider } from '@material-ui/core/styles';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import themeFile from './util/theme';
 import jwtDecode from 'jwt-decode';
 
 //Redux
@@ -14,11 +13,12 @@ import { logoutUser, getUserData } from './redux/actions/userActions';
 //Components
 import Navbar from './components/Navbar';
 import AuthRoute from './util/AuthRoute';
-
+import themeFile from './util/theme';
 //Pages
 import home from './pages/home';
 import login from './pages/login';
 import signup from './pages/signup';
+
 import axios from 'axios';
 
 const theme= createMuiTheme(themeFile);

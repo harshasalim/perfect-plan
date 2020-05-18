@@ -7,4 +7,10 @@ export const LOADING_USER = 'LOADING_USER';
 export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const LOADING_DATA = 'LOADING_DATA';
 //DATA REDUCER TYPES
+export const SET_PLANS = 'SET_PLANS';
+export const SET_PLAN = 'SET_PLAN';
+export const LIKE_PLAN = 'LIKE_PLAN';
+export const UNLIKE_PLAN = 'UNLIKE_PLAN';
+export const DELETE_PLAN = 'DELETE_PLAN';

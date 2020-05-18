@@ -1,27 +1,24 @@
-import React, { Component, Profiler } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
+import PropTypes from 'prop-types';
 
 import Plan from '../components/Plan';
 import Profile from '../components/Profile';
 
+import { connect } from 'react-redux';
+import { getPlans } from '../redux/actions/dataActions';
+
 class home extends Component {
-    state ={
-        plans: null
-    }
+    
     componentDidMount(){
-        axios.get('/plans')
-            .then(res => {
-                this.setState({
-                    plans: res.data
-                })
-            })
-            .catch(err => console.log(err));
+        this.props.getPlans();
     }
     render() {
-        let recentPlansMarkup = this.state.plans ? (
-        this.state.plans.map(plan => <Plan key={plan.planId} plan={plan}/>)
-        ) : <p>Loading...</p>
+        const { plans, loading }= this.props.data;
+        let recentPlansMarkup = !loading ? (
+        plans.map((plan) => <Plan key={plan.planId} plan={plan}/>)
+        ) : (<p>Loading...</p>);
         return (
         <Grid container spacing={2}>
             <Grid item sm={8} xs={12}>
@@ -35,4 +32,13 @@ class home extends Component {
     }
 }
 
-export default home
+home.propTypes = {
+    getPlans: PropTypes.func.isRequired,
+    data: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => ({
+    data: state.data
+})
+
+export default connect(mapStateToProps, { getPlans })(home);

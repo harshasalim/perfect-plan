@@ -1,4 +1,4 @@
-import { SET_PLANS, LIKE_PLAN, UNLIKE_PLAN, LOADING_DATA, DELETE_PLAN } from '../types';
+import { SET_PLANS, LIKE_PLAN, UNLIKE_PLAN, LOADING_DATA, DELETE_PLAN, POST_PLAN } from '../types';
 
 
 const initialState = {
@@ -37,6 +37,15 @@ export default function(state = initialState, action){
                 ...state
             }   
 
+        case POST_PLAN:
+            return{
+                ...state,
+                plans: [
+                    action.payload,
+                    ...state.plans
+                ]
+            }
+            
         default:
             return state;    
         

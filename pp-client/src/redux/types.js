@@ -14,3 +14,4 @@ export const SET_PLAN = 'SET_PLAN';
 export const LIKE_PLAN = 'LIKE_PLAN';
 export const UNLIKE_PLAN = 'UNLIKE_PLAN';
 export const DELETE_PLAN = 'DELETE_PLAN';
+export const POST_PLAN = 'POST_PLAN';

@@ -5,7 +5,7 @@ import MyButton from '../util/MyButton';
 
 //REDUX
 import { connect } from 'react-redux';
-import { postPlan } from '../redux/actions/dataActions';
+import { postPlan, clearErrors } from '../redux/actions/dataActions';
 
 //MUI
 import Button from '@material-ui/core/Button';
@@ -22,15 +22,17 @@ import CloseIcon from '@material-ui/icons/Close';
 const styles = (theme) => ({
     ...theme.formFeatures,
     submitButton: {
-        position: 'relative'
+        position: 'relative',
+        float: 'right',
+        marginTop: 10
     },
     progressSpinner: {
         position: 'absolute'
     },
     closeButton: {
         position: 'absolute',
-        left: '90%',
-        top: '4%'
+        left: '91%',
+        top: '6%'
     }
 })
 
@@ -41,7 +43,7 @@ class PostPlan extends Component {
         errors: {}
     };
 
-    componentWillReceiveProps(nextProps){
+    UNSAFE_componentWillReceiveProps(nextProps){
         if(nextProps.UI.errors){
             this.setState({
                 errors: nextProps.UI.errors
@@ -49,7 +51,6 @@ class PostPlan extends Component {
         }
         if(!nextProps.UI.errors && !nextProps.UI.loading){
             this.setState({ body: '', open:false, errors: {} });
-            this.handleClose();
         }
     }
 
@@ -58,6 +59,7 @@ class PostPlan extends Component {
     }
 
     handleClose = () => {
+        this.props.clearErrors();
         this.setState({ open: false, errors: {} })
     }
 
@@ -104,6 +106,7 @@ class PostPlan extends Component {
 
 PostPlan.propTypes = {
     postPlan: PropTypes.func.isRequired,
+    clearErrors : PropTypes.func.isRequired,
     UI: PropTypes.object.isRequired
 };
 
@@ -111,4 +114,4 @@ const mapStateToProps = (state) => ({
     UI: state.UI,
 })
 
-export default connect(mapStateToProps, {postPlan} )(withStyles(styles)(PostPlan));
+export default connect(mapStateToProps, {postPlan, clearErrors } )(withStyles(styles)(PostPlan));

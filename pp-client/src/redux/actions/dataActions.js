@@ -1,4 +1,4 @@
-import { SET_PLANS, LOADING_DATA, LIKE_PLAN, UNLIKE_PLAN, DELETE_PLAN, CLEAR_ERRORS, SET_ERRORS, POST_PLAN, LOADING_UI } from '../types';
+import { SET_PLANS, LOADING_DATA, LIKE_PLAN, UNLIKE_PLAN, DELETE_PLAN, CLEAR_ERRORS, SET_ERRORS, POST_PLAN, LOADING_UI, SET_PLAN, STOP_LOADING_UI } from '../types';
 import axios from 'axios';
 
 //Get all plans
@@ -17,6 +17,17 @@ export const getPlans = () => (dispatch) => {
                 payload: []
             })
         })
+}
+
+//Get single plan details
+export const getPlan = (planId) => (dispatch) => {
+    dispatch({ type: LOADING_UI });
+    axios.get(`/plan/${planId}`)
+    .then(res =>{
+        dispatch({ type: SET_PLAN, payload: res.data});
+        dispatch({ type: STOP_LOADING_UI });
+    })
+    .catch(err => console.log(err));
 }
 
 //Post a plan
@@ -68,4 +79,8 @@ export const deletePlan = (planId) => (dispatch) => {
             dispatch({ type: DELETE_PLAN, payload: planId })
         })
         .catch(err => console.log(err));
+}
+
+export const clearErrors = () => (dispatch) => {
+    dispatch({ type: CLEAR_ERRORS });
 }

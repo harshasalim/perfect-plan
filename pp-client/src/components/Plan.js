@@ -6,6 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import PropTypes from 'prop-types';
 import MyButton from '../util/MyButton';
 import DeletePlan from './DeletePlan';
+import PlanDialog from './PlanDialog';
 
 // MUI
 import Card from '@material-ui/core/Card';
@@ -95,6 +96,7 @@ class Plan extends Component {
                     </MyButton>
                     <span>{commentCount}</span>
                     {commentCount ===1 ?(<span> Comment</span>):(<span> Comments</span>)}
+                    <PlanDialog planId={planId} userHandle={userHandle}/>
                 </CardContent>
             </Card>
         )

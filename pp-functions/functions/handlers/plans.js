@@ -57,6 +57,7 @@ exports.getPlan = (req, res) => {
             if(!doc.exists){
                 return res.status(404).json({ error: 'Plan not found' });
             }
+            console.log('1');
             planData = doc.data();
             planData.planId= doc.id;
             return db.collection("comments")
@@ -64,6 +65,7 @@ exports.getPlan = (req, res) => {
             .where("planId","==", req.params.planId).get();
         })
         .then(data => {
+            console.log('2')
             planData.comments = [];
             data.forEach(doc => {
                 planData.comments.push(doc.data());
@@ -71,6 +73,7 @@ exports.getPlan = (req, res) => {
             return res.json(planData);
         })
         .catch(err => {
+            console.log('3')
             console.error(err);
             res.status(500).json({error: err.code});
         });

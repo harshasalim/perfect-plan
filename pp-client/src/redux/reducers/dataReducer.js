@@ -1,4 +1,4 @@
-import { SET_PLANS, LIKE_PLAN, UNLIKE_PLAN, LOADING_DATA, DELETE_PLAN, POST_PLAN, SET_PLAN } from '../types';
+import { SET_PLANS, LIKE_PLAN, UNLIKE_PLAN, LOADING_DATA, DELETE_PLAN, POST_PLAN, SET_PLAN, SUBMIT_COMMENT } from '../types';
 
 
 const initialState = {
@@ -32,6 +32,9 @@ export default function(state = initialState, action){
         case UNLIKE_PLAN:
             let index = state.plans.findIndex((plan) => plan.planId === action.payload.planId);
             state.plans[index] = action.payload;
+            if(state.plan.planId === action.payload.planId){
+                state.plan= action.payload
+            }
             return{
                 ...state,
             }
@@ -52,6 +55,15 @@ export default function(state = initialState, action){
                 ]
             }
             
+        case SUBMIT_COMMENT:
+            return{
+                ...state,
+                plan: {
+                    ...state.plan,
+                    comments: [action.payload, ...state.plan.comments]
+                }
+            }
+
         default:
             return state;    
         

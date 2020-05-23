@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import Plan from '../components/plan/Plan';
 import Profile from '../components/profile/Profile';
+import PlanSkeleton from '../util/PlanSkeleton';
 
 import { connect } from 'react-redux';
 import { getPlans } from '../redux/actions/dataActions';
@@ -17,7 +18,7 @@ class home extends Component {
         const { plans, loading }= this.props.data;
         let recentPlansMarkup = !loading ? (
         plans.map((plan) => <Plan key={plan.planId} plan={plan}/>)
-        ) : (<p>Loading...</p>);
+        ) : (<PlanSkeleton/>);
         return (
         <Grid container spacing={2}>
             <Grid item sm={8} xs={12}>

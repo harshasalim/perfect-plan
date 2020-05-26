@@ -148,7 +148,7 @@ PlanDialog.propTypes = {
     clearErrors: PropTypes.func.isRequired
 }
 
-const mapStateToPorps = (state) => ({
+const mapStateToProps = (state) => ({
     plan: state.data.plan,
     UI: state.UI
 })
@@ -157,4 +157,5 @@ const mapActionsToProps = {
     getPlan, clearErrors
 };
 
-export default connect(mapStateToPorps, mapActionsToProps)(withStyles(styles)(PlanDialog));
+
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(styles)(PlanDialog));

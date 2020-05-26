@@ -1,12 +1,14 @@
 const functions = require('firebase-functions');
 const app = require('express')();
-
+const cors = require('cors');
 const FBAuth = require('./util/fbAuth');
 
 const { db }= require('./util/admin');
 
 const { getAllPlans, postOnePlan, getPlan, deletePlan, commentOnPlan, likePlan, unlikePlan } = require('./handlers/plans');
 const { signUp, logIn, uploadImage, addUserDetails, getAuthenticatedUsers, getUserDetails, markNotificationsRead } = require('./handlers/users');
+
+app.use(cors());
 
 //Plan Routes
 app.get('/plans', getAllPlans);
